@@ -814,6 +814,20 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MJy-hE-JsJ">
+                                <rect key="frame" x="367" y="48" width="144" height="18"/>
+                                <buttonCell key="cell" type="check" title="Optional properties" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yr7-1n-Ivh">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OuC-wb-3Ne">
+                                <rect key="frame" x="367" y="28" width="234" height="18"/>
+                                <buttonCell key="cell" type="check" title="Generate dictionary representation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YYF-LT-byk">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="cd4-4Z-P4h" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="11Y-ht-hKx"/>
@@ -859,9 +873,11 @@
                         <outlet property="baseClassTextField" destination="aJ1-yn-Pl7" id="22H-xr-iCp"/>
                         <outlet property="companyNameTextField" destination="sNu-7Z-F06" id="1lU-Ld-bFb"/>
                         <outlet property="errorImageView" destination="PJA-AP-s5I" id="0nv-qV-54d"/>
+                        <outlet property="generateDictionaryRepresentation" destination="OuC-wb-3Ne" id="HQS-LZ-ubx"/>
                         <outlet property="includeObjectMapperCheckbox" destination="DfN-HB-jLF" id="gsn-gy-cek"/>
                         <outlet property="includeSwiftyCheckbox" destination="uZa-9r-6Xo" id="r84-Fc-xwG"/>
                         <outlet property="messageLabel" destination="GbJ-FJ-Uuc" id="19Z-0L-YwW"/>
+                        <outlet property="optionalProperties" destination="MJy-hE-JsJ" id="na9-Qm-cM3"/>
                         <outlet property="prefixClassTextField" destination="b3c-Wz-v36" id="3wr-bV-AAf"/>
                         <outlet property="supportNSCodingCheckbox" destination="or1-PD-m0L" id="wyH-nh-iSo"/>
                         <outlet property="supportObjectMapperCheckbox" destination="Cqf-Zq-qhb" id="Bxl-UD-iag"/>

@@ -25,6 +25,8 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet var supportObjectMapperCheckbox: NSButton!
     @IBOutlet var includeObjectMapperCheckbox: NSButton!
     @IBOutlet weak var useTabs: NSButton!
+    @IBOutlet weak var generateDictionaryRepresentation: NSButton!
+    @IBOutlet weak var optionalProperties: NSButton!
 
     // MARK: View methods
     override func loadView() {
@@ -125,6 +127,8 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
             generator.includeObjectMapper = objectMapperState
             generator.supportNSCoding = nscodingState
             generator.useTabs = self.useTabs.state == 1 ? true : false
+            generator.optionalProperties = self.optionalProperties.state == 1 ? true : false
+            generator.generateDictionaryRepresentation = self.generateDictionaryRepresentation.state == 1 ? true : false
 
             generator.generate()
         } else {

@@ -16,16 +16,7 @@ public {OBJECT_KIND} {OBJECT_NAME}: {OBJECT_BASE_CLASS}{NSCODING_PROTOCOL_SUPPOR
 
 {SWIFTY_JSON_SUPPORT}
 {OBJECT_MAPPER_SUPPORT}
-    /**
-    Generates description of the object in the form of a NSDictionary.
-    - returns: A Key value pair containing all valid values in the object.
-    */
-    public func dictionaryRepresentation() -> [String : AnyObject ] {
-
-        var dictionary: [String : AnyObject ] = [ : ]
-{DESC}
-        return dictionary
-    }
+{DICT_REP}
 {NSCODING_SUPPORT}
 }
 

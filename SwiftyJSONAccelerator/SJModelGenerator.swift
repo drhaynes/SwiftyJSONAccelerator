@@ -65,6 +65,9 @@ public class ModelGenerator {
         return useTabs ? ModelGenerator.tab : ModelGenerator.spaces
     }
 
+    var optionalProperties: Bool = true
+    var generateDictionaryRepresentation: Bool = true
+
 
     //MARK: Public Methods
     /**
@@ -277,7 +280,13 @@ public class ModelGenerator {
                 content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OBJECT_MAPPER}", withString: "")
             }
 
-            content = content.stringByReplacingOccurrencesOfString("{DESC}", withString: description)
+            var dictRep = ""
+            if generateDictionaryRepresentation {
+                if let dictRepBase = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("DictionaryRepresentation", ofType: "txt")!) {
+                    dictRep = dictRepBase.stringByReplacingOccurrencesOfString("{DESC}", withString: description)
+                }
+            }
+            content = content.stringByReplacingOccurrencesOfString("{DICT_REP}", withString: dictRep)
 
             if authorName != nil {
                 content = content.stringByReplacingOccurrencesOfString("__NAME__", withString: authorName!)
@@ -391,7 +400,7 @@ public class ModelGenerator {
             return "\(spacer)public let \(variableName): \(type) = false\n"
         }
 
-        return "\(spacer)public let \(variableName): \(type)?\n"
+        return "\(spacer)public let \(variableName): \(type)\(optionalProperties ? "?" : "")\n"
     }
 
     internal func constructorDeclarationBuilder(variableList: [(String, String)]) -> String {
