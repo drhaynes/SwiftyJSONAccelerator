@@ -24,6 +24,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet var supportSwiftyJSONCheckbox: NSButton!
     @IBOutlet var supportObjectMapperCheckbox: NSButton!
     @IBOutlet var includeObjectMapperCheckbox: NSButton!
+    @IBOutlet weak var useTabs: NSButton!
 
     // MARK: View methods
     override func loadView() {
@@ -123,6 +124,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
             generator.supportObjectMapper = supportObjectMapperState
             generator.includeObjectMapper = objectMapperState
             generator.supportNSCoding = nscodingState
+            generator.useTabs = self.useTabs.state == 1 ? true : false
 
             generator.generate()
         } else {

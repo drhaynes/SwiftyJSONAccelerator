@@ -57,6 +57,14 @@ public class ModelGenerator {
     var includeObjectMapper: Bool?
     var supportNSCoding: Bool?
 
+    var useTabs: Bool = true
+
+    static let tab = "\t"
+    static let spaces = "    "
+    var spacer: String {
+        return useTabs ? ModelGenerator.tab : ModelGenerator.spaces
+    }
+
 
     //MARK: Public Methods
     /**
@@ -366,7 +374,7 @@ public class ModelGenerator {
      - returns: A generated string declaring the string constant for the key.
      */
     internal func stringConstantDeclrationBuilder(constantName: String, key: String) -> String {
-        return "\tinternal let \(constantName): String = \"\(key)\"\n"
+        return "\(spacer)internal let \(constantName): String = \"\(key)\"\n"
     }
 
 
@@ -380,10 +388,10 @@ public class ModelGenerator {
      */
     internal func variableDeclarationBuilder(variableName: String, type: String) -> String {
         if type == VariableType.kBoolType {
-            return "\tpublic let \(variableName): \(type) = false\n"
+            return "\(spacer)public let \(variableName): \(type) = false\n"
         }
 
-        return "\tpublic let \(variableName): \(type)?\n"
+        return "\(spacer)public let \(variableName): \(type)?\n"
     }
 
     internal func constructorDeclarationBuilder(variableList: [(String, String)]) -> String {
@@ -391,11 +399,11 @@ public class ModelGenerator {
         var body = ""
         for variable in variableList {
             paramList.appendContentsOf("\(variable.0): \(variable.1), ")
-            body.appendContentsOf("\t\tself.\(variable.0) = \(variable.0)\n")
+            body.appendContentsOf("\(spacer)\(spacer)self.\(variable.0) = \(variable.0)\n")
         }
         paramList = paramList.substringToIndex(paramList.endIndex.predecessor().predecessor())
 
-        return "\tinit(\(paramList)) {\n\(body)\t}\n"
+        return "\(spacer)init(\(paramList)) {\n\(body)\(spacer)}\n"
     }
 
     //MARK: ObjectMapper Initalizer
@@ -407,7 +415,7 @@ public class ModelGenerator {
     - returns: A single line mapping for the variable
     */
     internal func mappingForObjectMapper(variableName: String, key: String) -> String {
-        return "\t\t\(variableName) <- map[\(key)]"
+        return "\(spacer)\(spacer)\(variableName) <- map[\(key)]"
     }
 
     //MARK: SwiftyJSON Initalizer
@@ -422,9 +430,9 @@ public class ModelGenerator {
     internal func initalizerForVariable(variableName: String, type: String, key: String) -> String {
         let variableType = typeToSwiftType(type)
         if type == VariableType.kBoolType {
-            return "\t\t\(variableName) = json[\(key)].\(variableType)Value"
+            return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)Value"
         }
-        return "\t\t\(variableName) = json[\(key)].\(variableType)"
+        return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)"
     }
 
     /**
@@ -435,7 +443,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable.
      */
     internal func initalizerForObject(variableName: String, className: String, key: String) -> String {
-        return  "\t\t\(variableName) = \(className)(json: json[\(key)])"
+        return  "\(spacer)\(spacer)\(variableName) = \(className)(json: json[\(key)])"
     }
 
     /**
@@ -445,7 +453,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable.
      */
     internal func initalizerForEmptyArray(variableName: String, key: String) -> String {
-        return "\t\tif let tempValue = json[\(key)].array {\n\t\t\t\(variableName) = tempValue\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return "\(spacer)\(spacer)if let tempValue = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)\(variableName) = tempValue\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -456,7 +464,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of object.
      */
     internal func initalizerForObjectArray(variableName: String, className: String, key: String) -> String {
-        return  "\t\t\(variableName) = []\n\t\tif let items = json[\(key)].array {\n\t\t\tfor item in items {\n\t\t\t\t\(variableName)?.append(\(className)(json: item))\n\t\t\t}\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return  "\(spacer)\(spacer)\(variableName) = []\n\(spacer)\(spacer)if let items = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)for item in items {\n\(spacer)\(spacer)\(spacer)\(spacer)\(variableName)?.append(\(className)(json: item))\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -467,7 +475,7 @@ public class ModelGenerator {
      */
     internal func initalizerForPrimitiveVariableArray(variableName: String, key: String, var type: String) -> String {
         type = typeToSwiftType(type)
-        return  "\t\t\(variableName) = []\n\t\tif let items = json[\(key)].array {\n\t\t\tfor item in items {\n\t\t\t\tif let tempValue = item.\(type) {\n\t\t\t\t\(variableName)?.append(tempValue)\n\t\t\t\t}\n\t\t\t}\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return  "\(spacer)\(spacer)\(variableName) = []\n\(spacer)\(spacer)if let items = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)for item in items {\n\(spacer)\(spacer)\(spacer)\(spacer)if let tempValue = item.\(type) {\n\(spacer)\(spacer)\(spacer)\(spacer)\(variableName)?.append(tempValue)\n\(spacer)\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     //MARK: Encoders and Decoder Generators
@@ -479,9 +487,9 @@ public class ModelGenerator {
     */
     internal func encoderForVariable(variableName: String, key: String, type: String) -> String {
         if type == VariableType.kBoolType {
-            return "\t\taCoder.encodeBool(\(variableName), forKey: \(key))"
+            return "\(spacer)\(spacer)aCoder.encodeBool(\(variableName), forKey: \(key))"
         }
-        return "\t\taCoder.encodeObject(\(variableName), forKey: \(key))"
+        return "\(spacer)\(spacer)aCoder.encodeObject(\(variableName), forKey: \(key))"
     }
     /**
      Decoder for a variable.
@@ -491,9 +499,9 @@ public class ModelGenerator {
      */
     internal func decoderForVariable(variableName: String, key: String, type: String) -> String {
         if type == VariableType.kBoolType {
-            return "\t\tself.\(variableName) = aDecoder.decodeBoolForKey(\(key))"
+            return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeBoolForKey(\(key))"
         }
-        return "\t\tself.\(variableName) = aDecoder.decodeObjectForKey(\(key)) as? \(type)"
+        return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeObjectForKey(\(key)) as? \(type)"
     }
 
     //MARK: Description Generators
@@ -508,9 +516,9 @@ public class ModelGenerator {
     */
     internal func descriptionForVariable(variableName: String, key: String, type: String) -> String {
         if type == VariableType.kBoolType {
-            return "\t\tdictionary.updateValue(\(variableName), forKey: \(key))"
+            return "\(spacer)\(spacer)dictionary.updateValue(\(variableName), forKey: \(key))"
         }
-        return "\t\tif \(variableName) != nil {\n\t\t\tdictionary.updateValue(\(variableName)!, forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName) != nil {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -522,7 +530,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of object.
      */
     internal func descriptionForObjectArray(variableName: String, key: String) -> String {
-        return  "\t\tif \(variableName)?.count > 0 {\n\t\t\tvar temp: [AnyObject] = []\n\t\t\tfor item in \(variableName)! {\n\t\t\t\ttemp.append(item.dictionaryRepresentation())\n\t\t\t}\n\t\t\tdictionary.updateValue(temp, forKey: \(key))\n\t\t}"
+        return  "\(spacer)\(spacer)if \(variableName)?.count > 0 {\n\(spacer)\(spacer)\(spacer)var temp: [AnyObject] = []\n\(spacer)\(spacer)\(spacer)for item in \(variableName)! {\n\(spacer)\(spacer)\(spacer)\(spacer)temp.append(item.dictionaryRepresentation())\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(temp, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -532,7 +540,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of primitive kind.
      */
     internal func descriptionForPrimitiveVariableArray(variableName: String, key: String) -> String {
-        return "\t\tif \(variableName)?.count > 0 {\n\t\t\tdictionary.updateValue(\(variableName)!, forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName)?.count > 0 {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -542,7 +550,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of primitive kind.
      */
     internal func descriptionForObjectVariableArray(variableName: String, key: String) -> String {
-        return "\t\tif \(variableName) != nil {\n\t\t\tdictionary.updateValue(\(variableName)!.dictionaryRepresentation(), forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName) != nil {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!.dictionaryRepresentation(), forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     //MARK: Helper Methods
