@@ -374,7 +374,7 @@ public class ModelGenerator {
      - returns: A generated string declaring the string constant for the key.
      */
     internal func stringConstantDeclrationBuilder(constantName: String, key: String) -> String {
-        return "\(spacer)internal let \(constantName): String = \"\(key)\"\n"
+        return "\(spacer)@nonobjc internal static let \(constantName): String = \"\(key)\"\n"
     }
 
 
