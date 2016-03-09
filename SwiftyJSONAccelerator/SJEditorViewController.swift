@@ -27,6 +27,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet weak var useTabs: NSButton!
     @IBOutlet weak var generateDictionaryRepresentation: NSButton!
     @IBOutlet weak var optionalProperties: NSButton!
+    @IBOutlet weak var supportJsonSwift: NSButton!
 
     // MARK: View methods
     override func loadView() {
@@ -129,6 +130,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
             generator.useTabs = self.useTabs.state == 1 ? true : false
             generator.optionalProperties = self.optionalProperties.state == 1 ? true : false
             generator.generateDictionaryRepresentation = self.generateDictionaryRepresentation.state == 1 ? true : false
+            generator.generateJsonSwiftConstructor = self.supportJsonSwift.state == 1 ? true : false
 
             generator.generate()
         } else {

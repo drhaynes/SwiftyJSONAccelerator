@@ -67,6 +67,7 @@ public class ModelGenerator {
 
     var optionalProperties: Bool = true
     var generateDictionaryRepresentation: Bool = true
+    var generateJsonSwiftConstructor: Bool = false
 
 
     //MARK: Public Methods
@@ -125,6 +126,8 @@ public class ModelGenerator {
         var decoders: String = ""
         var description: String = ""
         var objectMapperMappings: String = ""
+        var jsonSwiftGuard = [String]()
+        var jsonSwiftInitialiser = [String]()
 
         var objectBaseClass = "NSObject"
 
@@ -138,8 +141,8 @@ public class ModelGenerator {
             for (key, jsonValue) in object {
 
                 let variableName: String = variableNameBuilder(key)
-                let stringConstantName: String = variableNameKeyBuilder(className, variableName: variableName)
-                let variableType: String = checkType(jsonValue)
+                let stringConstantName: String = variableNameKeyBuilder(variableName)
+                let variableType = checkType(jsonValue)
 
                 // The key declaration and the encoder is same for all kinds of objects.
                 stringConstants = stringConstants.stringByAppendingFormat(stringConstantDeclrationBuilder(stringConstantName, key: key))
@@ -162,6 +165,7 @@ public class ModelGenerator {
                             decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: "[\(subClassName)]"))
                             description = description.stringByAppendingFormat("%@\n", descriptionForObjectArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassName)]"))
+                            jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array?.flatMap({ \(subClassName).init(json: $0) })")
                         } else {
                             // If it is anything other than an object, it should be a primitive type hence deal with it accordingly.
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassType)]"))
@@ -169,16 +173,17 @@ public class ModelGenerator {
                             decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: "[\(subClassType)]"))
                             description = description.stringByAppendingFormat("%@\n", descriptionForPrimitiveVariableArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassType)]"))
+                            jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array")
                         }
-
                     } else {
 
                         // if nothing is there make it a blank array.
                         // TODO: Maybe handle blank array a bit better.
                         declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                         initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForEmptyArray(variableName, key: stringConstantName))
-
+                        jsonSwiftGuard.append("\(variableName) = []")
                     }
+                    jsonSwiftInitialiser.append("\(variableName): \(variableName)")
 
                 } else if variableType == VariableType.ObjectType {
                     // If variable is a kind of object, generate a new model for it and set appropriate initalizers, declarations and decoders.
@@ -189,6 +194,9 @@ public class ModelGenerator {
                     description = description.stringByAppendingFormat("%@\n", descriptionForObjectVariableArray(variableName, key: stringConstantName))
                     variables.append((variableName, subClassName))
 
+                    jsonSwiftGuard.append("\(variableName) = \(subClassName)(json: json[\(className).\(stringConstantName)])")
+                    jsonSwiftInitialiser.append("\(variableName): \(variableName)")
+
                 } else {
                     // If it is a primitive then simply create initalizers, declarations and decoders.
                     declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
@@ -196,6 +204,18 @@ public class ModelGenerator {
                     decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: variableType.rawValue))
                     description = description.stringByAppendingFormat("%@\n", descriptionForVariable(variableName, key: stringConstantName, type: variableType))
                     variables.append((variableName, variableType.rawValue))
+
+                    jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].\(jsonSwiftGetterFromType(variableType))")
+                    switch variableType {
+                    case .IntNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Int(\(variableName))")
+                    case .FloatNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Float(\(variableName))")
+                    case .DoubleNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Double(\(variableName))")
+                    default:
+                        jsonSwiftInitialiser.append("\(variableName): \(variableName)")
+                    }
                 }
 
                 //ObjectMapper is generic for all
@@ -280,6 +300,20 @@ public class ModelGenerator {
                 content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OBJECT_MAPPER}", withString: "")
             }
 
+            if generateJsonSwiftConstructor {
+                if let jsonSwiftTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("JsonSwiftTemplate", ofType: "txt")!) {
+                    var jsonSwift = jsonSwiftTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: jsonSwiftGuard.joinWithSeparator(",\(spacer)\(spacer)\n"))
+                    jsonSwift = jsonSwift.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
+                    content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: jsonSwift)
+                } else {
+                    content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: "")
+                }
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_JSON_SWIFT}", withString: "\nimport JSONLib")
+            } else {
+                content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: "")
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_JSON_SWIFT}", withString: "")
+            }
+
             var dictRep = ""
             if generateDictionaryRepresentation {
                 if let dictRepBase = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("DictionaryRepresentation", ofType: "txt")!) {
@@ -315,6 +349,20 @@ public class ModelGenerator {
         }
 
         return className
+    }
+
+    private func jsonSwiftGetterFromType(variableType: VariableType) -> String {
+        switch variableType {
+        case .IntNumberType, .DoubleNumberType, .FloatNumberType:
+            return "number"
+        case .StringType:
+            return "string"
+        case .BoolType:
+            return "bool"
+        case .ArrayType:
+            return "array"
+        default: return ""
+        }
     }
 
 

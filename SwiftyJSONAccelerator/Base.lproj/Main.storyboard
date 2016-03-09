@@ -808,22 +808,29 @@
                                 </connections>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71J-dv-Vbp">
-                                <rect key="frame" x="367" y="68" width="93" height="18"/>
+                                <rect key="frame" x="366" y="88" width="93" height="18"/>
                                 <buttonCell key="cell" type="check" title="Use tabs" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LXq-hF-WiK">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MJy-hE-JsJ">
-                                <rect key="frame" x="367" y="48" width="144" height="18"/>
+                                <rect key="frame" x="366" y="68" width="144" height="18"/>
                                 <buttonCell key="cell" type="check" title="Optional properties" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yr7-1n-Ivh">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OuC-wb-3Ne">
-                                <rect key="frame" x="367" y="28" width="234" height="18"/>
+                                <rect key="frame" x="366" y="48" width="234" height="18"/>
                                 <buttonCell key="cell" type="check" title="Generate dictionary representation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YYF-LT-byk">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pg6-GK-Pvc">
+                                <rect key="frame" x="366" y="28" width="280" height="18"/>
+                                <buttonCell key="cell" type="check" title="Support importing from owensd/json-swift" bezelStyle="regularSquare" imagePosition="left" inset="2" id="43b-zz-R4L">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -879,6 +886,7 @@
                         <outlet property="messageLabel" destination="GbJ-FJ-Uuc" id="19Z-0L-YwW"/>
                         <outlet property="optionalProperties" destination="MJy-hE-JsJ" id="na9-Qm-cM3"/>
                         <outlet property="prefixClassTextField" destination="b3c-Wz-v36" id="3wr-bV-AAf"/>
+                        <outlet property="supportJsonSwift" destination="Pg6-GK-Pvc" id="5ik-Rl-qjq"/>
                         <outlet property="supportNSCodingCheckbox" destination="or1-PD-m0L" id="wyH-nh-iSo"/>
                         <outlet property="supportObjectMapperCheckbox" destination="Cqf-Zq-qhb" id="Bxl-UD-iag"/>
                         <outlet property="supportSwiftyJSONCheckbox" destination="cd4-4Z-P4h" id="JHq-HI-vYJ"/>
