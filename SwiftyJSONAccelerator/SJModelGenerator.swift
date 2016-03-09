@@ -19,14 +19,14 @@ import Cocoa
  *  - kArrayType
  *  - kObjectType
  */
-struct VariableType {
-    static let kStringType: String = "String"
-    static let kIntNumberType = "Int"
-    static let kFloatNumberType = "Float"
-    static let kDoubleNumberType = "Double"
-    static let kBoolType = "Bool"
-    static let kArrayType = "[]"
-    static let kObjectType = "{OBJ}"
+enum VariableType: String {
+    case StringType = "String"
+    case IntNumberType = "Int"
+    case FloatNumberType = "Float"
+    case DoubleNumberType = "Double"
+    case BoolType = "Bool"
+    case ArrayType = "[]"
+    case ObjectType = "{OBJ}"
 }
 
 /**
@@ -147,7 +147,7 @@ public class ModelGenerator {
 
 
                 // If the content is an array, we have to handle the elements and decide what to do.
-                if variableType == VariableType.kArrayType {
+                if variableType == VariableType.ArrayType {
 
                     // If the array has objects, then take the first one and proces it to generate a model.
                     if jsonValue.arrayValue.count > 0 {
@@ -155,7 +155,7 @@ public class ModelGenerator {
                         let subClassType = checkType(jsonValue.arrayValue[0])
 
                         // If the type is an object, generate a new model and also create appropriate initalizers, declarations and decoders.
-                        if subClassType == VariableType.kObjectType {
+                        if subClassType == VariableType.ObjectType {
                             let subClassName = generateModelForClass(mergeArrayToSingleObject(jsonValue.arrayValue), className: variableName, isSubModule:true)
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassName)]"))
                             initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForObjectArray(variableName, className: subClassName, key: stringConstantName))
@@ -165,7 +165,7 @@ public class ModelGenerator {
                         } else {
                             // If it is anything other than an object, it should be a primitive type hence deal with it accordingly.
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassType)]"))
-                            initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForPrimitiveVariableArray(variableName, key: stringConstantName, type: subClassType))
+                            initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForPrimitiveVariableArray(variableName, key: stringConstantName, type: subClassType.rawValue))
                             decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: "[\(subClassType)]"))
                             description = description.stringByAppendingFormat("%@\n", descriptionForPrimitiveVariableArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassType)]"))
@@ -175,12 +175,12 @@ public class ModelGenerator {
 
                         // if nothing is there make it a blank array.
                         // TODO: Maybe handle blank array a bit better.
-                        declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType))
+                        declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                         initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForEmptyArray(variableName, key: stringConstantName))
 
                     }
 
-                } else if variableType == VariableType.kObjectType {
+                } else if variableType == VariableType.ObjectType {
                     // If variable is a kind of object, generate a new model for it and set appropriate initalizers, declarations and decoders.
                     let subClassName = generateModelForClass(jsonValue, className: variableName, isSubModule:true)
                     declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: subClassName))
@@ -191,11 +191,11 @@ public class ModelGenerator {
 
                 } else {
                     // If it is a primitive then simply create initalizers, declarations and decoders.
-                    declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType))
+                    declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                     initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForVariable(variableName, type: variableType, key: stringConstantName))
-                    decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: variableType))
+                    decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: variableType.rawValue))
                     description = description.stringByAppendingFormat("%@\n", descriptionForVariable(variableName, key: stringConstantName, type: variableType))
-                    variables.append((variableName, variableType))
+                    variables.append((variableName, variableType.rawValue))
                 }
 
                 //ObjectMapper is generic for all
@@ -307,7 +307,7 @@ public class ModelGenerator {
             let subClassType = checkType(object[0])
 
             // If the type is an object then make it the base class and generate stuff.
-            if subClassType == VariableType.kObjectType {
+            if subClassType == VariableType.ObjectType {
                 return self.generateModelForClass(mergeArrayToSingleObject(object), className: className, isSubModule: false)
             } else {
                 return ""
@@ -396,7 +396,7 @@ public class ModelGenerator {
      - returns: A generated string for declaring the variable.
      */
     internal func variableDeclarationBuilder(variableName: String, type: String) -> String {
-        if type == VariableType.kBoolType {
+        if type == VariableType.BoolType.rawValue {
             return "\(spacer)public let \(variableName): \(type) = false\n"
         }
 
@@ -436,9 +436,9 @@ public class ModelGenerator {
 
     - returns: A single line declaration of the variable.
     */
-    internal func initalizerForVariable(variableName: String, type: String, key: String) -> String {
-        let variableType = typeToSwiftType(type)
-        if type == VariableType.kBoolType {
+    internal func initalizerForVariable(variableName: String, type: VariableType, key: String) -> String {
+        let variableType = typeToSwiftType(type.rawValue)
+        if type == VariableType.BoolType {
             return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)Value"
         }
         return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)"
@@ -494,8 +494,8 @@ public class ModelGenerator {
     - parameter key:          Key against which the value is stored.
     - returns: A single line encoder of the variable.
     */
-    internal func encoderForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
+    internal func encoderForVariable(variableName: String, key: String, type: VariableType) -> String {
+        if type == VariableType.BoolType {
             return "\(spacer)\(spacer)aCoder.encodeBool(\(variableName), forKey: \(key))"
         }
         return "\(spacer)\(spacer)aCoder.encodeObject(\(variableName), forKey: \(key))"
@@ -507,7 +507,7 @@ public class ModelGenerator {
      - returns: A single line decoder of the variable.
      */
     internal func decoderForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
+        if type == VariableType.BoolType.rawValue {
             return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeBoolForKey(\(key))"
         }
         return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeObjectForKey(\(key)) as? \(type)"
@@ -523,8 +523,8 @@ public class ModelGenerator {
 
     - returns: A single line description printer of the variable.
     */
-    internal func descriptionForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
+    internal func descriptionForVariable(variableName: String, key: String, type: VariableType) -> String {
+        if type == VariableType.BoolType {
             return "\(spacer)\(spacer)dictionary.updateValue(\(variableName), forKey: \(key))"
         }
         return "\(spacer)\(spacer)if \(variableName) != nil {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!, forKey: \(key))\n\(spacer)\(spacer)}"
@@ -571,15 +571,15 @@ public class ModelGenerator {
 
     - returns: Type of the variable.
     */
-    internal func checkType(value: JSON) -> String {
+    internal func checkType(value: JSON) -> VariableType {
 
         var js : JSON = value as JSON
-        var type: String = VariableType.kObjectType
+        var type: VariableType = VariableType.ObjectType
 
         if let _ = js.string {
-            type = VariableType.kStringType
+            type = VariableType.StringType
         } else if let _ = js.bool {
-            type = VariableType.kBoolType
+            type = VariableType.BoolType
         } else if let validNumber = js.number {
 
             //Smarter number type detection. Rather than use generic NSNumber, we can use a specific type. These are grouped into the common Swift number types.
@@ -608,7 +608,7 @@ public class ModelGenerator {
             case .CFIndexType:
                 fallthrough
             case .NSIntegerType:
-                type = VariableType.kIntNumberType
+                type = VariableType.IntNumberType
 
             case .Float32Type:
                 fallthrough
@@ -617,14 +617,14 @@ public class ModelGenerator {
             case .CGFloatType:
                 fallthrough
             case .FloatType:
-                type = VariableType.kFloatNumberType
+                type = VariableType.FloatNumberType
 
             case .DoubleType:
-                type = VariableType.kDoubleNumberType
+                type = VariableType.DoubleNumberType
             }
 
         } else if let _ = js.array {
-            type = VariableType.kArrayType
+            type = VariableType.ArrayType
         }
 
         return type
