@@ -361,16 +361,15 @@ public class ModelGenerator {
     }
 
     /**
-     Generate a variable name to store the key of the variable in the JSON for later use (generating JSON file, encoding and decoding). the format is k{ClassName}{VariableName}Key.
+     Generate a variable name to store the key of the variable in the JSON for later use (generating JSON file, encoding and decoding). the format is {VariableName}Key.
 
-     - parameter className:    Name of the class where this variable is.  (Already formatted)
      - parameter variableName: Name of the variable (Already formatted)
 
      - returns: A generated string that can be used to store the key of the variable in the JSON.
      */
-    internal func variableNameKeyBuilder(className: String, var variableName: String) -> String {
+    internal func variableNameKeyBuilder(var variableName: String) -> String {
         variableName.replaceRange(variableName.startIndex...variableName.startIndex, with: String(variableName[variableName.startIndex]).uppercaseString)
-        return "k\(className)\(variableName)Key"
+        return "\(variableName)Key"
     }
 
     /**
