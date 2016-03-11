@@ -68,6 +68,7 @@ public class ModelGenerator {
     var optionalProperties: Bool = true
     var generateDictionaryRepresentation: Bool = true
     var generateJsonSwiftConstructor: Bool = false
+    var generateOSJSONConstructor: Bool = false
 
 
     //MARK: Public Methods
@@ -127,6 +128,7 @@ public class ModelGenerator {
         var description: String = ""
         var objectMapperMappings: String = ""
         var jsonSwiftGuard = [String]()
+        var osJSONGuard = [String]()
         var jsonSwiftInitialiser = [String]()
 
         var objectBaseClass = "NSObject"
@@ -166,6 +168,7 @@ public class ModelGenerator {
                             description = description.stringByAppendingFormat("%@\n", descriptionForObjectArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassName)]"))
                             jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array?.flatMap({ \(subClassName).init(json: $0) })")
+                            osJSONGuard.append("\(variableName) = json.jsonArrayForKey(\(className).\(stringConstantName))?.flatMap({ \(subClassName).init(json: $0) })")
                         } else {
                             // If it is anything other than an object, it should be a primitive type hence deal with it accordingly.
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassType)]"))
@@ -174,6 +177,7 @@ public class ModelGenerator {
                             description = description.stringByAppendingFormat("%@\n", descriptionForPrimitiveVariableArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassType)]"))
                             jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array")
+                            osJSONGuard.append("\(variableName) = json.arrayValueForKey(\(className).\(stringConstantName))")
                         }
                     } else {
 
@@ -181,7 +185,9 @@ public class ModelGenerator {
                         // TODO: Maybe handle blank array a bit better.
                         declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                         initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForEmptyArray(variableName, key: stringConstantName))
-                        jsonSwiftGuard.append("\(variableName) = []")
+                        let emptyArray = "\(variableName) = []"
+                        jsonSwiftGuard.append(emptyArray)
+                        osJSONGuard.append(emptyArray)
                     }
                     jsonSwiftInitialiser.append("\(variableName): \(variableName)")
 
@@ -195,6 +201,8 @@ public class ModelGenerator {
                     variables.append((variableName, subClassName))
 
                     jsonSwiftGuard.append("\(variableName) = \(subClassName)(json: json[\(className).\(stringConstantName)])")
+                    osJSONGuard.append("\(variableName)JSON = json.jsonForKey(\(className).\(stringConstantName))")
+                    osJSONGuard.append("\(variableName) = \(subClassName)(json: \(variableName)JSON)")
                     jsonSwiftInitialiser.append("\(variableName): \(variableName)")
 
                 } else {
@@ -206,6 +214,7 @@ public class ModelGenerator {
                     variables.append((variableName, variableType.rawValue))
 
                     jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].\(jsonSwiftGetterFromType(variableType))")
+                    osJSONGuard.append("\(variableName) = json.\(osJSONGetterFromType(variableType))(\(className).\(stringConstantName))")
                     switch variableType {
                     case .IntNumberType:
                         jsonSwiftInitialiser.append("\(variableName): Int(\(variableName))")
@@ -314,6 +323,20 @@ public class ModelGenerator {
                 content = content.stringByReplacingOccurrencesOfString("{INCLUDE_JSON_SWIFT}", withString: "")
             }
 
+            if generateOSJSONConstructor {
+                if let osJSONTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("OSJSONTemplate", ofType: "txt")!) {
+                    var osjson = osJSONTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: osJSONGuard.joinWithSeparator(",\(spacer)\(spacer)\n"))
+                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
+                    content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: osjson)
+                } else {
+                    content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
+                }
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OSJSON}", withString: "\nimport OSJSON")
+            } else {
+                content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OSJSON}", withString: "")
+            }
+
             var dictRep = ""
             if generateDictionaryRepresentation {
                 if let dictRepBase = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("DictionaryRepresentation", ofType: "txt")!) {
@@ -361,6 +384,20 @@ public class ModelGenerator {
             return "bool"
         case .ArrayType:
             return "array"
+        default: return ""
+        }
+    }
+
+    private func osJSONGetterFromType(variableType: VariableType) -> String {
+        switch variableType {
+        case .IntNumberType:
+            return "intValueForKey"
+        case .DoubleNumberType, .FloatNumberType:
+            return "doubleValueForKey"
+        case .StringType:
+            return "stringValueForKey"
+        case .BoolType:
+            return "boolValueForKey"
         default: return ""
         }
     }

@@ -1,0 +1,10 @@
+    //MARK: JSON initialiser
+    convenience init?(json: JSON) {
+        guard let {GET_PARAMS}
+        else {
+            return nil
+        }
+        self.init(
+            {INIT_PARAMS}
+        )
+    }

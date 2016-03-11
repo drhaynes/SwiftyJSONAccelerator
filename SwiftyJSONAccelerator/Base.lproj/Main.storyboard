@@ -835,6 +835,13 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L5l-mI-RYg">
+                                <rect key="frame" x="366" y="8" width="221" height="18"/>
+                                <buttonCell key="cell" type="check" title="Support importing from OSJSON" bezelStyle="regularSquare" imagePosition="left" inset="2" id="J4h-3L-lAd">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="cd4-4Z-P4h" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="11Y-ht-hKx"/>
@@ -888,6 +895,7 @@
                         <outlet property="prefixClassTextField" destination="b3c-Wz-v36" id="3wr-bV-AAf"/>
                         <outlet property="supportJsonSwift" destination="Pg6-GK-Pvc" id="5ik-Rl-qjq"/>
                         <outlet property="supportNSCodingCheckbox" destination="or1-PD-m0L" id="wyH-nh-iSo"/>
+                        <outlet property="supportOSJSON" destination="L5l-mI-RYg" id="SdN-F5-GAe"/>
                         <outlet property="supportObjectMapperCheckbox" destination="Cqf-Zq-qhb" id="Bxl-UD-iag"/>
                         <outlet property="supportSwiftyJSONCheckbox" destination="cd4-4Z-P4h" id="JHq-HI-vYJ"/>
                         <outlet property="textView" destination="fWl-7Q-Cq6" id="1lh-CW-y1Y"/>

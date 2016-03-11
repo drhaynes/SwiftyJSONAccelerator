@@ -28,6 +28,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet weak var generateDictionaryRepresentation: NSButton!
     @IBOutlet weak var optionalProperties: NSButton!
     @IBOutlet weak var supportJsonSwift: NSButton!
+    @IBOutlet weak var supportOSJSON: NSButton!
 
     // MARK: View methods
     override func loadView() {
@@ -131,6 +132,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
             generator.optionalProperties = self.optionalProperties.state == 1 ? true : false
             generator.generateDictionaryRepresentation = self.generateDictionaryRepresentation.state == 1 ? true : false
             generator.generateJsonSwiftConstructor = self.supportJsonSwift.state == 1 ? true : false
+            generator.generateOSJSONConstructor = self.supportOSJSON.state == 1 ? true : false
 
             generator.generate()
         } else {
