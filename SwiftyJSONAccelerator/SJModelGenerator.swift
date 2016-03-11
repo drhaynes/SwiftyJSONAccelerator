@@ -421,6 +421,11 @@ public class ModelGenerator {
         return prefix.stringByAppendingString(classNameCleaned)
     }
 
+    func allCaps(s: String) -> Bool {
+        let uppercase: ClosedInterval<Character> = "A"..."Z"
+        return s.characters.filter({ uppercase.contains($0) }).count == s.characters.count
+    }
+
     /**
      Generate a variable name in sentence case with the first letter as lowercase, also replaces _. Ensures all caps are maintained if previously set in the name.
 
@@ -429,11 +434,18 @@ public class ModelGenerator {
      - returns: A generated string representation of the variable name.
      */
     internal func variableNameBuilder(variableName: String) -> String {
-        var variableName = replaceInternalKeywordsForVariableName(variableName).stringByReplacingOccurrencesOfString("_", withString: " ")
-        variableName = variableName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let variableName = replaceInternalKeywordsForVariableName(variableName).stringByReplacingOccurrencesOfString("_", withString: " ")
+        let hasSpaces = variableName.containsString(" ")
         var finalVariableName: String = ""
+        var previousChar = ""
         for (index, element) in variableName.componentsSeparatedByString(" ").enumerate() {
-            var component: String = element.lowercaseString
+            var component: String = {
+                if allCaps(variableName) && hasSpaces == false {
+                    return element.lowercaseString
+                } else {
+                    return hasSpaces ? (previousChar == " " ? element : element.lowercaseString) : element
+                }
+            }()
             if index != 0 {
                 component.replaceRange(component.startIndex...component.startIndex, with: String(component[component.startIndex]).uppercaseString)
             } else {
@@ -441,8 +453,9 @@ public class ModelGenerator {
             }
 
             finalVariableName.appendContentsOf(component)
+            previousChar = component
         }
-        return finalVariableName
+        return finalVariableName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     }
 
     /**
