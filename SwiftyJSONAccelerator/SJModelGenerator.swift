@@ -230,11 +230,7 @@ public class ModelGenerator {
                     default:
                         jsonSwiftInitialiser.append("\(variableName): \(variableName)")
                     }
-                    if variableType == .FloatNumberType {
-                        osJSONInitialiser.append("\(variableName): Float(\(variableName))")
-                    } else {
-                        osJSONInitialiser.append("\(variableName): \(variableName)")
-                    }
+                    osJSONInitialiser.append("\(variableName): \(variableName)")
                 }
 
                 //ObjectMapper is generic for all
@@ -404,8 +400,10 @@ public class ModelGenerator {
         switch variableType {
         case .IntNumberType:
             return "intValueForKey"
-        case .DoubleNumberType, .FloatNumberType:
+        case .DoubleNumberType:
             return "doubleValueForKey"
+        case .FloatNumberType:
+            return "floatValueForKey"
         case .StringType:
             return "stringValueForKey"
         case .BoolType:
