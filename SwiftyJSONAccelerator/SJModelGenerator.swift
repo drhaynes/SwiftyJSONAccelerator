@@ -321,8 +321,8 @@ public class ModelGenerator {
 
             if generateJsonSwiftConstructor {
                 if let jsonSwiftTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("JsonSwiftTemplate", ofType: "txt")!) {
-                    var jsonSwift = jsonSwiftTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: jsonSwiftGuard.joinWithSeparator(",\(spacer)\(spacer)\n"))
-                    jsonSwift = jsonSwift.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
+                    var jsonSwift = jsonSwiftTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: jsonSwiftGuard.joinWithSeparator(",\n\(spacer)\(spacer)"))
+                    jsonSwift = jsonSwift.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\n\(spacer)\(spacer)\(spacer)"))
                     content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: jsonSwift)
                 } else {
                     content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: "")
@@ -335,8 +335,8 @@ public class ModelGenerator {
 
             if generateOSJSONConstructor {
                 if let osJSONTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("OSJSONTemplate", ofType: "txt")!) {
-                    var osjson = osJSONTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: osJSONGuard.joinWithSeparator(",\(spacer)\(spacer)\n"))
-                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: osJSONInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
+                    var osjson = osJSONTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: osJSONGuard.joinWithSeparator(",\n\(spacer)\(spacer)"))
+                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: osJSONInitialiser.joinWithSeparator(",\n\(spacer)\(spacer)\(spacer)"))
                     content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: osjson)
                 } else {
                     content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
