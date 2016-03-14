@@ -29,6 +29,7 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet weak var optionalProperties: NSButton!
     @IBOutlet weak var supportJsonSwift: NSButton!
     @IBOutlet weak var supportOSJSON: NSButton!
+    @IBOutlet weak var moduleName: NSTextField!
 
     // MARK: View methods
     override func loadView() {

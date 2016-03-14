@@ -47,6 +47,7 @@ public class ModelGenerator {
     var baseClassName: String
     var baseContent: JSON
 
+    var moduleName: String?
     var authorName: String?
     var companyName: String?
     var prefix: String?
@@ -351,6 +352,8 @@ public class ModelGenerator {
             if companyName != nil {
                 content = content.stringByReplacingOccurrencesOfString("__MyCompanyName__", withString: companyName!)
             }
+
+            content = content.stringByReplacingOccurrencesOfString("{MODULE_NAME}", withString: moduleName ?? "")
 
             content = content.stringByReplacingOccurrencesOfString("{OBJECT_BASE_CLASS}", withString: objectBaseClass)
 

@@ -670,11 +670,11 @@
             <objects>
                 <viewController title="SwiftyJSONAccelerator" id="XfG-lQ-9wD" customClass="SJEditorViewController" customModule="SwiftyJSONAccelerator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="717" height="706"/>
+                        <rect key="frame" x="0.0" y="0.0" width="717" height="742"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AwX-MF-DMD">
-                                <rect key="frame" x="501" y="204" width="212" height="36"/>
+                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AwX-MF-DMD">
+                                <rect key="frame" x="501" y="240" width="212" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="Fsx-eV-1MY"/>
                                 </constraints>
@@ -686,8 +686,8 @@
                                     <action selector="format:" target="XfG-lQ-9wD" id="3wu-2c-YDh"/>
                                 </connections>
                             </button>
-                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gmg-Tp-PPn">
-                                <rect key="frame" x="0.0" y="243" width="717" height="463"/>
+                            <scrollView misplaced="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gmg-Tp-PPn">
+                                <rect key="frame" x="0.0" y="279" width="717" height="463"/>
                                 <clipView key="contentView" id="V7d-R1-cDN">
                                     <rect key="frame" x="1" y="1" width="715" height="461"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -715,16 +715,16 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <imageView translatesAutoresizingMaskIntoConstraints="NO" id="PJA-AP-s5I">
-                                <rect key="frame" x="15" y="216" width="20" height="20"/>
+                            <imageView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJA-AP-s5I">
+                                <rect key="frame" x="15" y="252" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="48s-vB-xta"/>
                                     <constraint firstAttribute="width" constant="20" id="t6S-fb-bjE"/>
                                 </constraints>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="failure" id="CKF-pW-DBY"/>
                             </imageView>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="GbJ-FJ-Uuc">
-                                <rect key="frame" x="41" y="210" width="460" height="26"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GbJ-FJ-Uuc">
+                                <rect key="frame" x="41" y="246" width="460" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="26" id="WGF-kR-SB9"/>
                                 </constraints>
@@ -734,47 +734,55 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aJ1-yn-Pl7">
-                                <rect key="frame" x="13" y="184" width="692" height="22"/>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aJ1-yn-Pl7">
+                                <rect key="frame" x="13" y="220" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="BaseClass" placeholderString="Base Class Name" bezelStyle="round" id="vuP-t4-ep6">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b3c-Wz-v36">
-                                <rect key="frame" x="13" y="160" width="692" height="22"/>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b3c-Wz-v36">
+                                <rect key="frame" x="13" y="196" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Class Prefix (For example, NS)" bezelStyle="round" id="N8s-m9-cf7">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sNu-7Z-F06">
-                                <rect key="frame" x="13" y="136" width="692" height="22"/>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sNu-7Z-F06">
+                                <rect key="frame" x="13" y="172" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Company name" bezelStyle="round" id="76e-Gm-0jI">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mJg-3P-2Aw">
-                                <rect key="frame" x="13" y="112" width="692" height="22"/>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mJg-3P-2Aw">
+                                <rect key="frame" x="13" y="148" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Author name" bezelStyle="round" id="jUe-0u-QLL">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="uZa-9r-6Xo">
-                                <rect key="frame" x="41" y="48" width="265" height="18"/>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uet-VS-bkx">
+                                <rect key="frame" x="13" y="124" width="692" height="22"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Module name" bezelStyle="round" id="dKm-fT-16N">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uZa-9r-6Xo">
+                                <rect key="frame" x="41" y="55" width="265" height="18"/>
                                 <buttonCell key="cell" type="check" title="Add &quot;import SwiftyJSON&quot; in the models." bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="tJK-cs-wrm">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="cd4-4Z-P4h">
-                                <rect key="frame" x="13" y="68" width="240" height="18"/>
+                            <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cd4-4Z-P4h">
+                                <rect key="frame" x="13" y="75" width="240" height="18"/>
                                 <buttonCell key="cell" type="check" title="Support importing from SwiftyJSON" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="JTr-D4-Ydb">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -783,22 +791,22 @@
                                     <action selector="recalcEnabledBoxes:" target="XfG-lQ-9wD" id="xJS-rQ-k1k"/>
                                 </connections>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="or1-PD-m0L">
-                                <rect key="frame" x="13" y="88" width="265" height="18"/>
+                            <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="or1-PD-m0L">
+                                <rect key="frame" x="13" y="95" width="265" height="18"/>
                                 <buttonCell key="cell" type="check" title="Support NSCoding" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YUy-wn-qL0">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="DfN-HB-jLF">
-                                <rect key="frame" x="41" y="8" width="280" height="18"/>
+                            <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DfN-HB-jLF">
+                                <rect key="frame" x="41" y="15" width="280" height="18"/>
                                 <buttonCell key="cell" type="check" title="Add &quot;import ObjectMapper&quot; in the models." bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LOO-Pz-Jiw">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Cqf-Zq-qhb">
-                                <rect key="frame" x="13" y="28" width="230" height="18"/>
+                            <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cqf-Zq-qhb">
+                                <rect key="frame" x="13" y="35" width="230" height="18"/>
                                 <buttonCell key="cell" type="check" title="Support Hearst-DD/ObjectMapper" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="vuk-4k-MY7">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -808,35 +816,35 @@
                                 </connections>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71J-dv-Vbp">
-                                <rect key="frame" x="366" y="88" width="93" height="18"/>
+                                <rect key="frame" x="366" y="95" width="93" height="18"/>
                                 <buttonCell key="cell" type="check" title="Use tabs" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LXq-hF-WiK">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MJy-hE-JsJ">
-                                <rect key="frame" x="366" y="68" width="144" height="18"/>
+                                <rect key="frame" x="366" y="75" width="144" height="18"/>
                                 <buttonCell key="cell" type="check" title="Optional properties" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yr7-1n-Ivh">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OuC-wb-3Ne">
-                                <rect key="frame" x="366" y="48" width="234" height="18"/>
+                                <rect key="frame" x="366" y="55" width="234" height="18"/>
                                 <buttonCell key="cell" type="check" title="Generate dictionary representation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YYF-LT-byk">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pg6-GK-Pvc">
-                                <rect key="frame" x="366" y="28" width="280" height="18"/>
+                                <rect key="frame" x="366" y="35" width="280" height="18"/>
                                 <buttonCell key="cell" type="check" title="Support importing from owensd/json-swift" bezelStyle="regularSquare" imagePosition="left" inset="2" id="43b-zz-R4L">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L5l-mI-RYg">
-                                <rect key="frame" x="366" y="8" width="221" height="18"/>
+                                <rect key="frame" x="366" y="15" width="221" height="18"/>
                                 <buttonCell key="cell" type="check" title="Support importing from OSJSON" bezelStyle="regularSquare" imagePosition="left" inset="2" id="J4h-3L-lAd">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -891,6 +899,7 @@
                         <outlet property="includeObjectMapperCheckbox" destination="DfN-HB-jLF" id="gsn-gy-cek"/>
                         <outlet property="includeSwiftyCheckbox" destination="uZa-9r-6Xo" id="r84-Fc-xwG"/>
                         <outlet property="messageLabel" destination="GbJ-FJ-Uuc" id="19Z-0L-YwW"/>
+                        <outlet property="moduleName" destination="Uet-VS-bkx" id="Hzg-Eu-6BG"/>
                         <outlet property="optionalProperties" destination="MJy-hE-JsJ" id="na9-Qm-cM3"/>
                         <outlet property="prefixClassTextField" destination="b3c-Wz-v36" id="3wr-bV-AAf"/>
                         <outlet property="supportJsonSwift" destination="Pg6-GK-Pvc" id="5ik-Rl-qjq"/>
@@ -904,7 +913,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="819.5" y="535"/>
+            <point key="canvasLocation" x="819.5" y="553"/>
         </scene>
     </scenes>
     <resources>
