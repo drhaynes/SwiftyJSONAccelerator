@@ -517,7 +517,9 @@ public class ModelGenerator {
             paramList.appendContentsOf("\(variable.0): \(variable.1), ")
             body.appendContentsOf("\(spacer)\(spacer)self.\(variable.0) = \(variable.0)\n")
         }
-        paramList = paramList.substringToIndex(paramList.endIndex.predecessor().predecessor())
+        if paramList.characters.count > 0 {
+            paramList = paramList.substringToIndex(paramList.endIndex.predecessor().predecessor())
+        }
 
         return "\(spacer)init(\(paramList)) {\n\(body)\(spacer)}\n"
     }
