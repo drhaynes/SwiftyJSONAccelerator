@@ -131,6 +131,7 @@ public class ModelGenerator {
         var jsonSwiftGuard = [String]()
         var osJSONGuard = [String]()
         var jsonSwiftInitialiser = [String]()
+        var osJSONInitialiser = [String]()
 
         var objectBaseClass = "NSObject"
 
@@ -190,7 +191,9 @@ public class ModelGenerator {
                         jsonSwiftGuard.append(emptyArray)
                         osJSONGuard.append(emptyArray)
                     }
-                    jsonSwiftInitialiser.append("\(variableName): \(variableName)")
+                    let initialiserLine = "\(variableName): \(variableName)"
+                    jsonSwiftInitialiser.append(initialiserLine)
+                    osJSONInitialiser.append(initialiserLine)
 
                 } else if variableType == VariableType.ObjectType {
                     // If variable is a kind of object, generate a new model for it and set appropriate initalizers, declarations and decoders.
@@ -204,8 +207,9 @@ public class ModelGenerator {
                     jsonSwiftGuard.append("\(variableName) = \(subClassName)(json: json[\(className).\(stringConstantName)])")
                     osJSONGuard.append("\(variableName)JSON = json.jsonForKey(\(className).\(stringConstantName))")
                     osJSONGuard.append("\(variableName) = \(subClassName)(json: \(variableName)JSON)")
-                    jsonSwiftInitialiser.append("\(variableName): \(variableName)")
-
+                    let initialiserLine = "\(variableName): \(variableName)"
+                    jsonSwiftInitialiser.append(initialiserLine)
+                    osJSONInitialiser.append(initialiserLine)
                 } else {
                     // If it is a primitive then simply create initalizers, declarations and decoders.
                     declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
@@ -225,6 +229,11 @@ public class ModelGenerator {
                         jsonSwiftInitialiser.append("\(variableName): Double(\(variableName))")
                     default:
                         jsonSwiftInitialiser.append("\(variableName): \(variableName)")
+                    }
+                    if variableType == .FloatNumberType {
+                        osJSONInitialiser.append("\(variableName): Float(\(variableName))")
+                    } else {
+                        osJSONInitialiser.append("\(variableName): \(variableName)")
                     }
                 }
 
@@ -327,7 +336,7 @@ public class ModelGenerator {
             if generateOSJSONConstructor {
                 if let osJSONTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("OSJSONTemplate", ofType: "txt")!) {
                     var osjson = osJSONTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: osJSONGuard.joinWithSeparator(",\(spacer)\(spacer)\n"))
-                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
+                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: osJSONInitialiser.joinWithSeparator(",\(spacer)\(spacer)\(spacer)\n"))
                     content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: osjson)
                 } else {
                     content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
