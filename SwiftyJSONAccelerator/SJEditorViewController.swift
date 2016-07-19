@@ -24,6 +24,12 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
     @IBOutlet var supportSwiftyJSONCheckbox: NSButton!
     @IBOutlet var supportObjectMapperCheckbox: NSButton!
     @IBOutlet var includeObjectMapperCheckbox: NSButton!
+    @IBOutlet weak var useTabs: NSButton!
+    @IBOutlet weak var generateDictionaryRepresentation: NSButton!
+    @IBOutlet weak var optionalProperties: NSButton!
+    @IBOutlet weak var supportJsonSwift: NSButton!
+    @IBOutlet weak var supportOSJSON: NSButton!
+    @IBOutlet weak var moduleName: NSTextField!
 
     // MARK: View methods
     override func loadView() {
@@ -123,6 +129,11 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
             generator.supportObjectMapper = supportObjectMapperState
             generator.includeObjectMapper = objectMapperState
             generator.supportNSCoding = nscodingState
+            generator.useTabs = self.useTabs.state == 1 ? true : false
+            generator.optionalProperties = self.optionalProperties.state == 1 ? true : false
+            generator.generateDictionaryRepresentation = self.generateDictionaryRepresentation.state == 1 ? true : false
+            generator.generateJsonSwiftConstructor = self.supportJsonSwift.state == 1 ? true : false
+            generator.generateOSJSONConstructor = self.supportOSJSON.state == 1 ? true : false
 
             generator.generate()
         } else {
@@ -170,16 +181,16 @@ class SJEditorViewController: NSViewController, NSTextViewDelegate {
         var lineNumber = 0
         var characterPosition = 0
         for line in string.componentsSeparatedByString("\n") {
-            lineNumber++
+            lineNumber += 1
             var columnNumber = 0
             for column in line.characters {
-                characterPosition++
-                columnNumber++
+                characterPosition += 1
+                columnNumber += 1
                 if characterPosition == position {
                     return (String(column), lineNumber, columnNumber )
                 }
             }
-            characterPosition++
+            characterPosition += 1
             if characterPosition == position {
                 return ("\n", lineNumber, columnNumber+1 )
             }

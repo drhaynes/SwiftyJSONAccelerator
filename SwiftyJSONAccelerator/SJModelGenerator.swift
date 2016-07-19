@@ -19,14 +19,14 @@ import Cocoa
  *  - kArrayType
  *  - kObjectType
  */
-struct VariableType {
-    static let kStringType: String = "String"
-    static let kIntNumberType = "Int"
-    static let kFloatNumberType = "Float"
-    static let kDoubleNumberType = "Double"
-    static let kBoolType = "Bool"
-    static let kArrayType = "[]"
-    static let kObjectType = "{OBJ}"
+enum VariableType: String {
+    case StringType = "String"
+    case IntNumberType = "Int"
+    case FloatNumberType = "Float"
+    case DoubleNumberType = "Double"
+    case BoolType = "Bool"
+    case ArrayType = "[]"
+    case ObjectType = "{OBJ}"
 }
 
 /**
@@ -47,6 +47,7 @@ public class ModelGenerator {
     var baseClassName: String
     var baseContent: JSON
 
+    var moduleName: String?
     var authorName: String?
     var companyName: String?
     var prefix: String?
@@ -56,6 +57,19 @@ public class ModelGenerator {
     var supportObjectMapper: Bool?
     var includeObjectMapper: Bool?
     var supportNSCoding: Bool?
+
+    var useTabs: Bool = true
+
+    static let tab = "\t"
+    static let spaces = "    "
+    var spacer: String {
+        return useTabs ? ModelGenerator.tab : ModelGenerator.spaces
+    }
+
+    var optionalProperties: Bool = true
+    var generateDictionaryRepresentation: Bool = true
+    var generateJsonSwiftConstructor: Bool = false
+    var generateOSJSONConstructor: Bool = false
 
 
     //MARK: Public Methods
@@ -114,6 +128,10 @@ public class ModelGenerator {
         var decoders: String = ""
         var description: String = ""
         var objectMapperMappings: String = ""
+        var jsonSwiftGuard = [String]()
+        var osJSONGuard = [String]()
+        var jsonSwiftInitialiser = [String]()
+        var osJSONInitialiser = [String]()
 
         var objectBaseClass = "NSObject"
 
@@ -127,8 +145,8 @@ public class ModelGenerator {
             for (key, jsonValue) in object {
 
                 let variableName: String = variableNameBuilder(key)
-                let stringConstantName: String = variableNameKeyBuilder(className, variableName: variableName)
-                let variableType: String = checkType(jsonValue)
+                let stringConstantName: String = variableNameKeyBuilder(variableName)
+                let variableType = checkType(jsonValue)
 
                 // The key declaration and the encoder is same for all kinds of objects.
                 stringConstants = stringConstants.stringByAppendingFormat(stringConstantDeclrationBuilder(stringConstantName, key: key))
@@ -136,7 +154,7 @@ public class ModelGenerator {
 
 
                 // If the content is an array, we have to handle the elements and decide what to do.
-                if variableType == VariableType.kArrayType {
+                if variableType == VariableType.ArrayType {
 
                     // If the array has objects, then take the first one and proces it to generate a model.
                     if jsonValue.arrayValue.count > 0 {
@@ -144,32 +162,40 @@ public class ModelGenerator {
                         let subClassType = checkType(jsonValue.arrayValue[0])
 
                         // If the type is an object, generate a new model and also create appropriate initalizers, declarations and decoders.
-                        if subClassType == VariableType.kObjectType {
+                        if subClassType == VariableType.ObjectType {
                             let subClassName = generateModelForClass(mergeArrayToSingleObject(jsonValue.arrayValue), className: variableName, isSubModule:true)
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassName)]"))
                             initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForObjectArray(variableName, className: subClassName, key: stringConstantName))
                             decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: "[\(subClassName)]"))
                             description = description.stringByAppendingFormat("%@\n", descriptionForObjectArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassName)]"))
+                            jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array?.flatMap({ \(subClassName).init(json: $0) })")
+                            osJSONGuard.append("\(variableName) = json.jsonArrayForKey(\(className).\(stringConstantName))?.flatMap({ \(subClassName).init(json: $0) })")
                         } else {
                             // If it is anything other than an object, it should be a primitive type hence deal with it accordingly.
                             declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: "[\(subClassType)]"))
-                            initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForPrimitiveVariableArray(variableName, key: stringConstantName, type: subClassType))
+                            initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForPrimitiveVariableArray(variableName, key: stringConstantName, type: subClassType.rawValue))
                             decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: "[\(subClassType)]"))
                             description = description.stringByAppendingFormat("%@\n", descriptionForPrimitiveVariableArray(variableName, key: stringConstantName))
                             variables.append((variableName, "[\(subClassType)]"))
+                            jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].array")
+                            osJSONGuard.append("\(variableName) = json.arrayValueForKey(\(className).\(stringConstantName))")
                         }
-
                     } else {
 
                         // if nothing is there make it a blank array.
                         // TODO: Maybe handle blank array a bit better.
-                        declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType))
+                        declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                         initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForEmptyArray(variableName, key: stringConstantName))
-
+                        let emptyArray = "\(variableName) = []"
+                        jsonSwiftGuard.append(emptyArray)
+                        osJSONGuard.append(emptyArray)
                     }
+                    let initialiserLine = "\(variableName): \(variableName)"
+                    jsonSwiftInitialiser.append(initialiserLine)
+                    osJSONInitialiser.append(initialiserLine)
 
-                } else if variableType == VariableType.kObjectType {
+                } else if variableType == VariableType.ObjectType {
                     // If variable is a kind of object, generate a new model for it and set appropriate initalizers, declarations and decoders.
                     let subClassName = generateModelForClass(jsonValue, className: variableName, isSubModule:true)
                     declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: subClassName))
@@ -178,13 +204,33 @@ public class ModelGenerator {
                     description = description.stringByAppendingFormat("%@\n", descriptionForObjectVariableArray(variableName, key: stringConstantName))
                     variables.append((variableName, subClassName))
 
+                    jsonSwiftGuard.append("\(variableName) = \(subClassName)(json: json[\(className).\(stringConstantName)])")
+                    osJSONGuard.append("\(variableName)JSON = json.jsonForKey(\(className).\(stringConstantName))")
+                    osJSONGuard.append("\(variableName) = \(subClassName)(json: \(variableName)JSON)")
+                    let initialiserLine = "\(variableName): \(variableName)"
+                    jsonSwiftInitialiser.append(initialiserLine)
+                    osJSONInitialiser.append(initialiserLine)
                 } else {
                     // If it is a primitive then simply create initalizers, declarations and decoders.
-                    declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType))
+                    declarations = declarations.stringByAppendingFormat(variableDeclarationBuilder(variableName, type: variableType.rawValue))
                     initalizers = initalizers.stringByAppendingFormat("%@\n", initalizerForVariable(variableName, type: variableType, key: stringConstantName))
-                    decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: variableType))
+                    decoders = decoders.stringByAppendingFormat("%@\n", decoderForVariable(variableName,key: stringConstantName, type: variableType.rawValue))
                     description = description.stringByAppendingFormat("%@\n", descriptionForVariable(variableName, key: stringConstantName, type: variableType))
-                    variables.append((variableName, variableType))
+                    variables.append((variableName, variableType.rawValue))
+
+                    jsonSwiftGuard.append("\(variableName) = json[\(className).\(stringConstantName)].\(jsonSwiftGetterFromType(variableType))")
+                    osJSONGuard.append("\(variableName) = json.\(osJSONGetterFromType(variableType))(\(className).\(stringConstantName))")
+                    switch variableType {
+                    case .IntNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Int(\(variableName))")
+                    case .FloatNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Float(\(variableName))")
+                    case .DoubleNumberType:
+                        jsonSwiftInitialiser.append("\(variableName): Double(\(variableName))")
+                    default:
+                        jsonSwiftInitialiser.append("\(variableName): \(variableName)")
+                    }
+                    osJSONInitialiser.append("\(variableName): \(variableName)")
                 }
 
                 //ObjectMapper is generic for all
@@ -269,7 +315,41 @@ public class ModelGenerator {
                 content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OBJECT_MAPPER}", withString: "")
             }
 
-            content = content.stringByReplacingOccurrencesOfString("{DESC}", withString: description)
+            if generateJsonSwiftConstructor {
+                if let jsonSwiftTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("JsonSwiftTemplate", ofType: "txt")!) {
+                    var jsonSwift = jsonSwiftTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: jsonSwiftGuard.joinWithSeparator(",\n\(spacer)\(spacer)"))
+                    jsonSwift = jsonSwift.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: jsonSwiftInitialiser.joinWithSeparator(",\n\(spacer)\(spacer)\(spacer)"))
+                    content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: jsonSwift)
+                } else {
+                    content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: "")
+                }
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_JSON_SWIFT}", withString: "\nimport JSONLib")
+            } else {
+                content = content.stringByReplacingOccurrencesOfString("{JSON_SWIFT_SUPPORT}", withString: "")
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_JSON_SWIFT}", withString: "")
+            }
+
+            if generateOSJSONConstructor {
+                if let osJSONTemplate = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("OSJSONTemplate", ofType: "txt")!) {
+                    var osjson = osJSONTemplate.stringByReplacingOccurrencesOfString("{GET_PARAMS}", withString: osJSONGuard.joinWithSeparator(",\n\(spacer)\(spacer)"))
+                    osjson = osjson.stringByReplacingOccurrencesOfString("{INIT_PARAMS}", withString: osJSONInitialiser.joinWithSeparator(",\n\(spacer)\(spacer)\(spacer)"))
+                    content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: osjson)
+                } else {
+                    content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
+                }
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OSJSON}", withString: "\nimport OSJSON")
+            } else {
+                content = content.stringByReplacingOccurrencesOfString("{OSJSON_SUPPORT}", withString: "")
+                content = content.stringByReplacingOccurrencesOfString("{INCLUDE_OSJSON}", withString: "")
+            }
+
+            var dictRep = ""
+            if generateDictionaryRepresentation {
+                if let dictRepBase = try? String(contentsOfFile: NSBundle.mainBundle().pathForResource("DictionaryRepresentation", ofType: "txt")!) {
+                    dictRep = dictRepBase.stringByReplacingOccurrencesOfString("{DESC}", withString: description)
+                }
+            }
+            content = content.stringByReplacingOccurrencesOfString("{DICT_REP}", withString: dictRep)
 
             if authorName != nil {
                 content = content.stringByReplacingOccurrencesOfString("__NAME__", withString: authorName!)
@@ -277,6 +357,8 @@ public class ModelGenerator {
             if companyName != nil {
                 content = content.stringByReplacingOccurrencesOfString("__MyCompanyName__", withString: companyName!)
             }
+
+            content = content.stringByReplacingOccurrencesOfString("{MODULE_NAME}", withString: moduleName ?? "")
 
             content = content.stringByReplacingOccurrencesOfString("{OBJECT_BASE_CLASS}", withString: objectBaseClass)
 
@@ -290,7 +372,7 @@ public class ModelGenerator {
             let subClassType = checkType(object[0])
 
             // If the type is an object then make it the base class and generate stuff.
-            if subClassType == VariableType.kObjectType {
+            if subClassType == VariableType.ObjectType {
                 return self.generateModelForClass(mergeArrayToSingleObject(object), className: className, isSubModule: false)
             } else {
                 return ""
@@ -298,6 +380,36 @@ public class ModelGenerator {
         }
 
         return className
+    }
+
+    private func jsonSwiftGetterFromType(variableType: VariableType) -> String {
+        switch variableType {
+        case .IntNumberType, .DoubleNumberType, .FloatNumberType:
+            return "number"
+        case .StringType:
+            return "string"
+        case .BoolType:
+            return "bool"
+        case .ArrayType:
+            return "array"
+        default: return ""
+        }
+    }
+
+    private func osJSONGetterFromType(variableType: VariableType) -> String {
+        switch variableType {
+        case .IntNumberType:
+            return "intValueForKey"
+        case .DoubleNumberType:
+            return "doubleValueForKey"
+        case .FloatNumberType:
+            return "floatValueForKey"
+        case .StringType:
+            return "stringValueForKey"
+        case .BoolType:
+            return "boolValueForKey"
+        default: return ""
+        }
     }
 
 
@@ -319,6 +431,11 @@ public class ModelGenerator {
         return prefix.stringByAppendingString(classNameCleaned)
     }
 
+    func allCaps(s: String) -> Bool {
+        let uppercase: ClosedInterval<Character> = "A"..."Z"
+        return s.characters.filter({ uppercase.contains($0) }).count == s.characters.count
+    }
+
     /**
      Generate a variable name in sentence case with the first letter as lowercase, also replaces _. Ensures all caps are maintained if previously set in the name.
 
@@ -327,11 +444,18 @@ public class ModelGenerator {
      - returns: A generated string representation of the variable name.
      */
     internal func variableNameBuilder(variableName: String) -> String {
-        var variableName = replaceInternalKeywordsForVariableName(variableName).stringByReplacingOccurrencesOfString("_", withString: " ")
-        variableName = variableName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let variableName = replaceInternalKeywordsForVariableName(variableName).stringByReplacingOccurrencesOfString("_", withString: " ")
+        let hasSpaces = variableName.containsString(" ")
         var finalVariableName: String = ""
+        var previousChar = ""
         for (index, element) in variableName.componentsSeparatedByString(" ").enumerate() {
-            var component: String = element.lowercaseString
+            var component: String = {
+                if allCaps(variableName) && hasSpaces == false {
+                    return element.lowercaseString
+                } else {
+                    return hasSpaces ? (previousChar == " " ? element : element.lowercaseString) : element
+                }
+            }()
             if index != 0 {
                 component.replaceRange(component.startIndex...component.startIndex, with: String(component[component.startIndex]).uppercaseString)
             } else {
@@ -339,21 +463,22 @@ public class ModelGenerator {
             }
 
             finalVariableName.appendContentsOf(component)
+            previousChar = component
         }
-        return finalVariableName
+        return finalVariableName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     }
 
     /**
-     Generate a variable name to store the key of the variable in the JSON for later use (generating JSON file, encoding and decoding). the format is k{ClassName}{VariableName}Key.
+     Generate a variable name to store the key of the variable in the JSON for later use (generating JSON file, encoding and decoding). the format is {VariableName}Key.
 
-     - parameter className:    Name of the class where this variable is.  (Already formatted)
      - parameter variableName: Name of the variable (Already formatted)
 
      - returns: A generated string that can be used to store the key of the variable in the JSON.
      */
-    internal func variableNameKeyBuilder(className: String, var variableName: String) -> String {
+    internal func variableNameKeyBuilder(variableName: String) -> String {
+        var variableName = variableName
         variableName.replaceRange(variableName.startIndex...variableName.startIndex, with: String(variableName[variableName.startIndex]).uppercaseString)
-        return "k\(className)\(variableName)Key"
+        return "\(variableName)Key"
     }
 
     /**
@@ -366,7 +491,7 @@ public class ModelGenerator {
      - returns: A generated string declaring the string constant for the key.
      */
     internal func stringConstantDeclrationBuilder(constantName: String, key: String) -> String {
-        return "\tinternal let \(constantName): String = \"\(key)\"\n"
+        return "\(spacer)@nonobjc internal static let \(constantName): String = \"\(key)\"\n"
     }
 
 
@@ -379,11 +504,11 @@ public class ModelGenerator {
      - returns: A generated string for declaring the variable.
      */
     internal func variableDeclarationBuilder(variableName: String, type: String) -> String {
-        if type == VariableType.kBoolType {
-            return "\tpublic let \(variableName): \(type) = false\n"
+        if type == VariableType.BoolType.rawValue {
+            return "\(spacer)public let \(variableName): \(type) = false\n"
         }
 
-        return "\tpublic let \(variableName): \(type)?\n"
+        return "\(spacer)public let \(variableName): \(type)\(optionalProperties ? "?" : "")\n"
     }
 
     internal func constructorDeclarationBuilder(variableList: [(String, String)]) -> String {
@@ -391,11 +516,13 @@ public class ModelGenerator {
         var body = ""
         for variable in variableList {
             paramList.appendContentsOf("\(variable.0): \(variable.1), ")
-            body.appendContentsOf("\t\tself.\(variable.0) = \(variable.0)\n")
+            body.appendContentsOf("\(spacer)\(spacer)self.\(variable.0) = \(variable.0)\n")
         }
-        paramList = paramList.substringToIndex(paramList.endIndex.predecessor().predecessor())
+        if paramList.characters.count > 0 {
+            paramList = paramList.substringToIndex(paramList.endIndex.predecessor().predecessor())
+        }
 
-        return "\tinit(\(paramList)) {\n\(body)\t}\n"
+        return "\(spacer)init(\(paramList)) {\n\(body)\(spacer)}\n"
     }
 
     //MARK: ObjectMapper Initalizer
@@ -407,7 +534,7 @@ public class ModelGenerator {
     - returns: A single line mapping for the variable
     */
     internal func mappingForObjectMapper(variableName: String, key: String) -> String {
-        return "\t\t\(variableName) <- map[\(key)]"
+        return "\(spacer)\(spacer)\(variableName) <- map[\(key)]"
     }
 
     //MARK: SwiftyJSON Initalizer
@@ -419,12 +546,12 @@ public class ModelGenerator {
 
     - returns: A single line declaration of the variable.
     */
-    internal func initalizerForVariable(variableName: String, type: String, key: String) -> String {
-        let variableType = typeToSwiftType(type)
-        if type == VariableType.kBoolType {
-            return "\t\t\(variableName) = json[\(key)].\(variableType)Value"
+    internal func initalizerForVariable(variableName: String, type: VariableType, key: String) -> String {
+        let variableType = typeToSwiftType(type.rawValue)
+        if type == VariableType.BoolType {
+            return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)Value"
         }
-        return "\t\t\(variableName) = json[\(key)].\(variableType)"
+        return "\(spacer)\(spacer)\(variableName) = json[\(key)].\(variableType)"
     }
 
     /**
@@ -435,7 +562,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable.
      */
     internal func initalizerForObject(variableName: String, className: String, key: String) -> String {
-        return  "\t\t\(variableName) = \(className)(json: json[\(key)])"
+        return  "\(spacer)\(spacer)\(variableName) = \(className)(json: json[\(key)])"
     }
 
     /**
@@ -445,7 +572,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable.
      */
     internal func initalizerForEmptyArray(variableName: String, key: String) -> String {
-        return "\t\tif let tempValue = json[\(key)].array {\n\t\t\t\(variableName) = tempValue\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return "\(spacer)\(spacer)if let tempValue = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)\(variableName) = tempValue\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -456,7 +583,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of object.
      */
     internal func initalizerForObjectArray(variableName: String, className: String, key: String) -> String {
-        return  "\t\t\(variableName) = []\n\t\tif let items = json[\(key)].array {\n\t\t\tfor item in items {\n\t\t\t\t\(variableName)?.append(\(className)(json: item))\n\t\t\t}\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return  "\(spacer)\(spacer)\(variableName) = []\n\(spacer)\(spacer)if let items = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)for item in items {\n\(spacer)\(spacer)\(spacer)\(spacer)\(variableName)?.append(\(className)(json: item))\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -465,9 +592,10 @@ public class ModelGenerator {
      - parameter key:          Key against which the value is stored.
      - returns: A single line declaration of the variable which is an array of primitive kind.
      */
-    internal func initalizerForPrimitiveVariableArray(variableName: String, key: String, var type: String) -> String {
+    internal func initalizerForPrimitiveVariableArray(variableName: String, key: String, type: String) -> String {
+        var type = type
         type = typeToSwiftType(type)
-        return  "\t\t\(variableName) = []\n\t\tif let items = json[\(key)].array {\n\t\t\tfor item in items {\n\t\t\t\tif let tempValue = item.\(type) {\n\t\t\t\t\(variableName)?.append(tempValue)\n\t\t\t\t}\n\t\t\t}\n\t\t} else {\n\t\t\t\(variableName) = nil\n\t\t}"
+        return  "\(spacer)\(spacer)\(variableName) = []\n\(spacer)\(spacer)if let items = json[\(key)].array {\n\(spacer)\(spacer)\(spacer)for item in items {\n\(spacer)\(spacer)\(spacer)\(spacer)if let tempValue = item.\(type) {\n\(spacer)\(spacer)\(spacer)\(spacer)\(variableName)?.append(tempValue)\n\(spacer)\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)} else {\n\(spacer)\(spacer)\(spacer)\(variableName) = nil\n\(spacer)\(spacer)}"
     }
 
     //MARK: Encoders and Decoder Generators
@@ -477,11 +605,11 @@ public class ModelGenerator {
     - parameter key:          Key against which the value is stored.
     - returns: A single line encoder of the variable.
     */
-    internal func encoderForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
-            return "\t\taCoder.encodeBool(\(variableName), forKey: \(key))"
+    internal func encoderForVariable(variableName: String, key: String, type: VariableType) -> String {
+        if type == VariableType.BoolType {
+            return "\(spacer)\(spacer)aCoder.encodeBool(\(variableName), forKey: \(key))"
         }
-        return "\t\taCoder.encodeObject(\(variableName), forKey: \(key))"
+        return "\(spacer)\(spacer)aCoder.encodeObject(\(variableName), forKey: \(key))"
     }
     /**
      Decoder for a variable.
@@ -490,10 +618,10 @@ public class ModelGenerator {
      - returns: A single line decoder of the variable.
      */
     internal func decoderForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
-            return "\t\tself.\(variableName) = aDecoder.decodeBoolForKey(\(key))"
+        if type == VariableType.BoolType.rawValue {
+            return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeBoolForKey(\(key))"
         }
-        return "\t\tself.\(variableName) = aDecoder.decodeObjectForKey(\(key)) as? \(type)"
+        return "\(spacer)\(spacer)self.\(variableName) = aDecoder.decodeObjectForKey(\(key)) as? \(type)"
     }
 
     //MARK: Description Generators
@@ -506,11 +634,11 @@ public class ModelGenerator {
 
     - returns: A single line description printer of the variable.
     */
-    internal func descriptionForVariable(variableName: String, key: String, type: String) -> String {
-        if type == VariableType.kBoolType {
-            return "\t\tdictionary.updateValue(\(variableName), forKey: \(key))"
+    internal func descriptionForVariable(variableName: String, key: String, type: VariableType) -> String {
+        if type == VariableType.BoolType {
+            return "\(spacer)\(spacer)dictionary.updateValue(\(variableName), forKey: \(key))"
         }
-        return "\t\tif \(variableName) != nil {\n\t\t\tdictionary.updateValue(\(variableName)!, forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName) != nil {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -522,7 +650,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of object.
      */
     internal func descriptionForObjectArray(variableName: String, key: String) -> String {
-        return  "\t\tif \(variableName)?.count > 0 {\n\t\t\tvar temp: [AnyObject] = []\n\t\t\tfor item in \(variableName)! {\n\t\t\t\ttemp.append(item.dictionaryRepresentation())\n\t\t\t}\n\t\t\tdictionary.updateValue(temp, forKey: \(key))\n\t\t}"
+        return  "\(spacer)\(spacer)if \(variableName)?.count > 0 {\n\(spacer)\(spacer)\(spacer)var temp: [AnyObject] = []\n\(spacer)\(spacer)\(spacer)for item in \(variableName)! {\n\(spacer)\(spacer)\(spacer)\(spacer)temp.append(item.dictionaryRepresentation())\n\(spacer)\(spacer)\(spacer)}\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(temp, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -532,7 +660,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of primitive kind.
      */
     internal func descriptionForPrimitiveVariableArray(variableName: String, key: String) -> String {
-        return "\t\tif \(variableName)?.count > 0 {\n\t\t\tdictionary.updateValue(\(variableName)!, forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName)?.count > 0 {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!, forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     /**
@@ -542,7 +670,7 @@ public class ModelGenerator {
      - returns: A single line declaration of the variable which is an array of primitive kind.
      */
     internal func descriptionForObjectVariableArray(variableName: String, key: String) -> String {
-        return "\t\tif \(variableName) != nil {\n\t\t\tdictionary.updateValue(\(variableName)!.dictionaryRepresentation(), forKey: \(key))\n\t\t}"
+        return "\(spacer)\(spacer)if \(variableName) != nil {\n\(spacer)\(spacer)\(spacer)dictionary.updateValue(\(variableName)!.dictionaryRepresentation(), forKey: \(key))\n\(spacer)\(spacer)}"
     }
 
     //MARK: Helper Methods
@@ -554,15 +682,15 @@ public class ModelGenerator {
 
     - returns: Type of the variable.
     */
-    internal func checkType(value: JSON) -> String {
+    internal func checkType(value: JSON) -> VariableType {
 
         var js : JSON = value as JSON
-        var type: String = VariableType.kObjectType
+        var type: VariableType = VariableType.ObjectType
 
         if let _ = js.string {
-            type = VariableType.kStringType
+            type = VariableType.StringType
         } else if let _ = js.bool {
-            type = VariableType.kBoolType
+            type = VariableType.BoolType
         } else if let validNumber = js.number {
 
             //Smarter number type detection. Rather than use generic NSNumber, we can use a specific type. These are grouped into the common Swift number types.
@@ -591,7 +719,7 @@ public class ModelGenerator {
             case .CFIndexType:
                 fallthrough
             case .NSIntegerType:
-                type = VariableType.kIntNumberType
+                type = VariableType.IntNumberType
 
             case .Float32Type:
                 fallthrough
@@ -600,14 +728,14 @@ public class ModelGenerator {
             case .CGFloatType:
                 fallthrough
             case .FloatType:
-                type = VariableType.kFloatNumberType
+                type = VariableType.FloatNumberType
 
             case .DoubleType:
-                type = VariableType.kDoubleNumberType
+                type = VariableType.DoubleNumberType
             }
 
         } else if let _ = js.array {
-            type = VariableType.kArrayType
+            type = VariableType.ArrayType
         }
 
         return type
@@ -668,7 +796,8 @@ public class ModelGenerator {
      - parameter type: VariableType
      - returns: swift variable type.
      */
-    internal func typeToSwiftType(var type: String) -> String {
+    internal func typeToSwiftType(type: String) -> String {
+        var type = type
         type.replaceRange(type.startIndex...type.startIndex, with: String(type[type.startIndex]).lowercaseString)
         return type
     }

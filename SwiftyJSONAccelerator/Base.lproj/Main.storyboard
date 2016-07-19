@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -670,15 +670,14 @@
             <objects>
                 <viewController title="SwiftyJSONAccelerator" id="XfG-lQ-9wD" customClass="SJEditorViewController" customModule="SwiftyJSONAccelerator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="717" height="706"/>
+                        <rect key="frame" x="0.0" y="0.0" width="717" height="742"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AwX-MF-DMD">
-                                <rect key="frame" x="501" y="204" width="212" height="36"/>
+                                <rect key="frame" x="501" y="233" width="212" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="Fsx-eV-1MY"/>
                                 </constraints>
-                                <animations/>
                                 <buttonCell key="cell" type="push" title="Generate Models" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lfq-UD-8WD">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -688,54 +687,47 @@
                                 </connections>
                             </button>
                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gmg-Tp-PPn">
-                                <rect key="frame" x="0.0" y="243" width="717" height="463"/>
+                                <rect key="frame" x="0.0" y="272" width="717" height="470"/>
                                 <clipView key="contentView" id="V7d-R1-cDN">
-                                    <rect key="frame" x="1" y="1" width="715" height="461"/>
+                                    <rect key="frame" x="1" y="1" width="715" height="468"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="fWl-7Q-Cq6" customClass="SJTextView" customModule="SwiftyJSONAccelerator" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="715" height="461"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="715" height="468"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <animations/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="715" height="461"/>
+                                            <size key="minSize" width="715" height="468"/>
                                             <size key="maxSize" width="717" height="10000000"/>
                                             <color key="insertionPointColor" name="controlLightHighlightColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="715" height="461"/>
+                                            <size key="minSize" width="715" height="468"/>
                                             <size key="maxSize" width="717" height="10000000"/>
                                         </textView>
                                     </subviews>
-                                    <animations/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </clipView>
-                                <animations/>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="JkI-yr-4gs">
                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="9fh-RH-upi">
-                                    <rect key="frame" x="700" y="1" width="16" height="461"/>
+                                    <rect key="frame" x="700" y="1" width="16" height="468"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
                                 </scroller>
                             </scrollView>
                             <imageView translatesAutoresizingMaskIntoConstraints="NO" id="PJA-AP-s5I">
-                                <rect key="frame" x="15" y="216" width="20" height="20"/>
+                                <rect key="frame" x="15" y="245" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="48s-vB-xta"/>
                                     <constraint firstAttribute="width" constant="20" id="t6S-fb-bjE"/>
                                 </constraints>
-                                <animations/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="failure" id="CKF-pW-DBY"/>
                             </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="GbJ-FJ-Uuc">
-                                <rect key="frame" x="41" y="210" width="460" height="26"/>
+                                <rect key="frame" x="41" y="239" width="460" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="26" id="WGF-kR-SB9"/>
                                 </constraints>
-                                <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="j5n-yT-9hg">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -743,8 +735,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aJ1-yn-Pl7">
-                                <rect key="frame" x="13" y="184" width="692" height="22"/>
-                                <animations/>
+                                <rect key="frame" x="13" y="213" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="BaseClass" placeholderString="Base Class Name" bezelStyle="round" id="vuP-t4-ep6">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -752,8 +743,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b3c-Wz-v36">
-                                <rect key="frame" x="13" y="160" width="692" height="22"/>
-                                <animations/>
+                                <rect key="frame" x="13" y="189" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Class Prefix (For example, NS)" bezelStyle="round" id="N8s-m9-cf7">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -761,8 +751,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sNu-7Z-F06">
-                                <rect key="frame" x="13" y="136" width="692" height="22"/>
-                                <animations/>
+                                <rect key="frame" x="13" y="165" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Company name" bezelStyle="round" id="76e-Gm-0jI">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -770,9 +759,16 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mJg-3P-2Aw">
-                                <rect key="frame" x="13" y="112" width="692" height="22"/>
-                                <animations/>
+                                <rect key="frame" x="13" y="141" width="692" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Author name" bezelStyle="round" id="jUe-0u-QLL">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Uet-VS-bkx">
+                                <rect key="frame" x="13" y="117" width="692" height="22"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Module name" bezelStyle="round" id="dKm-fT-16N">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -780,7 +776,6 @@
                             </textField>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="uZa-9r-6Xo">
                                 <rect key="frame" x="41" y="48" width="265" height="18"/>
-                                <animations/>
                                 <buttonCell key="cell" type="check" title="Add &quot;import SwiftyJSON&quot; in the models." bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="tJK-cs-wrm">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -788,7 +783,6 @@
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="cd4-4Z-P4h">
                                 <rect key="frame" x="13" y="68" width="240" height="18"/>
-                                <animations/>
                                 <buttonCell key="cell" type="check" title="Support importing from SwiftyJSON" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="JTr-D4-Ydb">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -799,7 +793,6 @@
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="or1-PD-m0L">
                                 <rect key="frame" x="13" y="88" width="265" height="18"/>
-                                <animations/>
                                 <buttonCell key="cell" type="check" title="Support NSCoding" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YUy-wn-qL0">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -807,7 +800,6 @@
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="DfN-HB-jLF">
                                 <rect key="frame" x="41" y="8" width="280" height="18"/>
-                                <animations/>
                                 <buttonCell key="cell" type="check" title="Add &quot;import ObjectMapper&quot; in the models." bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LOO-Pz-Jiw">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -815,7 +807,6 @@
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="Cqf-Zq-qhb">
                                 <rect key="frame" x="13" y="28" width="230" height="18"/>
-                                <animations/>
                                 <buttonCell key="cell" type="check" title="Support Hearst-DD/ObjectMapper" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="vuk-4k-MY7">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -824,16 +815,52 @@
                                     <action selector="recalcEnabledBoxes:" target="XfG-lQ-9wD" id="Vu8-i2-A3h"/>
                                 </connections>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="71J-dv-Vbp">
+                                <rect key="frame" x="366" y="88" width="76" height="18"/>
+                                <buttonCell key="cell" type="check" title="Use tabs" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LXq-hF-WiK">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="MJy-hE-JsJ">
+                                <rect key="frame" x="366" y="68" width="139" height="18"/>
+                                <buttonCell key="cell" type="check" title="Optional properties" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yr7-1n-Ivh">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="OuC-wb-3Ne">
+                                <rect key="frame" x="366" y="48" width="234" height="18"/>
+                                <buttonCell key="cell" type="check" title="Generate dictionary representation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YYF-LT-byk">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Pg6-GK-Pvc">
+                                <rect key="frame" x="366" y="28" width="280" height="18"/>
+                                <buttonCell key="cell" type="check" title="Support importing from owensd/json-swift" bezelStyle="regularSquare" imagePosition="left" inset="2" id="43b-zz-R4L">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="L5l-mI-RYg">
+                                <rect key="frame" x="366" y="8" width="221" height="18"/>
+                                <buttonCell key="cell" type="check" title="Support importing from OSJSON" bezelStyle="regularSquare" imagePosition="left" inset="2" id="J4h-3L-lAd">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="cd4-4Z-P4h" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="11Y-ht-hKx"/>
                             <constraint firstAttribute="trailing" secondItem="AwX-MF-DMD" secondAttribute="trailing" constant="10" id="1wF-Ly-8ue"/>
+                            <constraint firstItem="L5l-mI-RYg" firstAttribute="top" secondItem="Pg6-GK-Pvc" secondAttribute="bottom" constant="6" id="2Ze-Z6-M0E"/>
                             <constraint firstItem="aJ1-yn-Pl7" firstAttribute="leading" secondItem="mJg-3P-2Aw" secondAttribute="leading" id="35V-f8-AGH"/>
                             <constraint firstItem="b3c-Wz-v36" firstAttribute="width" secondItem="mJg-3P-2Aw" secondAttribute="width" id="8wA-lO-d5e"/>
                             <constraint firstAttribute="bottom" secondItem="DfN-HB-jLF" secondAttribute="bottom" constant="10" id="9BW-Yo-Auq"/>
                             <constraint firstItem="aJ1-yn-Pl7" firstAttribute="width" secondItem="mJg-3P-2Aw" secondAttribute="width" id="9m4-gy-MnL"/>
                             <constraint firstAttribute="trailing" secondItem="Gmg-Tp-PPn" secondAttribute="trailing" id="APF-Xg-5Am"/>
-                            <constraint firstItem="or1-PD-m0L" firstAttribute="top" secondItem="mJg-3P-2Aw" secondAttribute="bottom" constant="8" id="BEK-W3-IHq"/>
+                            <constraint firstItem="OuC-wb-3Ne" firstAttribute="leading" secondItem="MJy-hE-JsJ" secondAttribute="leading" id="ASI-Fi-Gv5"/>
                             <constraint firstItem="sNu-7Z-F06" firstAttribute="leading" secondItem="mJg-3P-2Aw" secondAttribute="leading" id="EKU-pL-FZ6"/>
                             <constraint firstItem="uZa-9r-6Xo" firstAttribute="top" secondItem="cd4-4Z-P4h" secondAttribute="bottom" constant="6" id="FUN-ZO-xR8"/>
                             <constraint firstItem="sNu-7Z-F06" firstAttribute="width" secondItem="mJg-3P-2Aw" secondAttribute="width" id="FdJ-wz-nzg"/>
@@ -843,17 +870,25 @@
                             <constraint firstItem="DfN-HB-jLF" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="43" id="JO5-QU-smH"/>
                             <constraint firstItem="aJ1-yn-Pl7" firstAttribute="top" secondItem="AwX-MF-DMD" secondAttribute="bottom" constant="5" id="KM7-XP-CAY"/>
                             <constraint firstItem="Gmg-Tp-PPn" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="KPd-r3-s21"/>
+                            <constraint firstItem="or1-PD-m0L" firstAttribute="top" secondItem="Uet-VS-bkx" secondAttribute="bottom" constant="13" id="OVs-4V-ZVp"/>
                             <constraint firstItem="or1-PD-m0L" firstAttribute="width" secondItem="uZa-9r-6Xo" secondAttribute="width" id="OdK-JX-tBs"/>
                             <constraint firstItem="Cqf-Zq-qhb" firstAttribute="top" secondItem="uZa-9r-6Xo" secondAttribute="bottom" constant="6" id="OzW-Gj-CmR"/>
+                            <constraint firstItem="OuC-wb-3Ne" firstAttribute="top" secondItem="MJy-hE-JsJ" secondAttribute="bottom" constant="6" id="POW-2O-LlT"/>
                             <constraint firstItem="DfN-HB-jLF" firstAttribute="top" secondItem="Cqf-Zq-qhb" secondAttribute="bottom" constant="6" id="PVQ-Cl-zPa"/>
                             <constraint firstItem="b3c-Wz-v36" firstAttribute="leading" secondItem="mJg-3P-2Aw" secondAttribute="leading" id="Q9g-6W-fq3"/>
+                            <constraint firstItem="MJy-hE-JsJ" firstAttribute="top" secondItem="71J-dv-Vbp" secondAttribute="bottom" constant="6" id="RZo-N8-4uA"/>
+                            <constraint firstItem="Pg6-GK-Pvc" firstAttribute="top" secondItem="OuC-wb-3Ne" secondAttribute="bottom" constant="6" id="S4A-kq-yFL"/>
                             <constraint firstItem="sNu-7Z-F06" firstAttribute="top" secondItem="b3c-Wz-v36" secondAttribute="bottom" constant="2" id="Svz-9v-6zt"/>
+                            <constraint firstItem="L5l-mI-RYg" firstAttribute="leading" secondItem="Pg6-GK-Pvc" secondAttribute="leading" id="U3Y-x1-iwn"/>
                             <constraint firstItem="Cqf-Zq-qhb" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="Ueo-v4-wjp"/>
+                            <constraint firstItem="71J-dv-Vbp" firstAttribute="leading" secondItem="or1-PD-m0L" secondAttribute="trailing" constant="92" id="Wel-46-0iB"/>
                             <constraint firstItem="PJA-AP-s5I" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="ZKf-XD-X3C"/>
                             <constraint firstItem="uZa-9r-6Xo" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="43" id="ZT5-69-AWH"/>
                             <constraint firstItem="AwX-MF-DMD" firstAttribute="top" secondItem="Gmg-Tp-PPn" secondAttribute="bottom" constant="7" id="cHK-Sj-6ps"/>
+                            <constraint firstItem="Uet-VS-bkx" firstAttribute="top" secondItem="mJg-3P-2Aw" secondAttribute="bottom" constant="2" id="ccV-am-9Hj"/>
                             <constraint firstItem="or1-PD-m0L" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="15" id="dHR-Z7-0of"/>
                             <constraint firstItem="AwX-MF-DMD" firstAttribute="top" secondItem="PJA-AP-s5I" secondAttribute="top" id="ds3-Tk-TKg"/>
+                            <constraint firstItem="71J-dv-Vbp" firstAttribute="centerY" secondItem="or1-PD-m0L" secondAttribute="centerY" id="eJ3-ko-IpF"/>
                             <constraint firstItem="aJ1-yn-Pl7" firstAttribute="top" secondItem="PJA-AP-s5I" secondAttribute="bottom" constant="10" id="gHI-A7-SyE"/>
                             <constraint firstItem="mJg-3P-2Aw" firstAttribute="top" secondItem="sNu-7Z-F06" secondAttribute="bottom" constant="2" id="h24-Ox-KU7"/>
                             <constraint firstItem="Gmg-Tp-PPn" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="hMN-xb-eV1"/>
@@ -862,27 +897,36 @@
                             <constraint firstItem="aJ1-yn-Pl7" firstAttribute="top" secondItem="GbJ-FJ-Uuc" secondAttribute="bottom" constant="4" id="iwL-1w-9za"/>
                             <constraint firstItem="b3c-Wz-v36" firstAttribute="top" secondItem="aJ1-yn-Pl7" secondAttribute="bottom" constant="2" id="jIg-Xp-GaU"/>
                             <constraint firstItem="mJg-3P-2Aw" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="13" id="n4f-7b-FZR"/>
+                            <constraint firstItem="Uet-VS-bkx" firstAttribute="leading" secondItem="mJg-3P-2Aw" secondAttribute="leading" id="nHQ-0y-Wgd"/>
+                            <constraint firstItem="Pg6-GK-Pvc" firstAttribute="leading" secondItem="OuC-wb-3Ne" secondAttribute="leading" id="nqo-2v-3ET"/>
+                            <constraint firstItem="Uet-VS-bkx" firstAttribute="width" secondItem="mJg-3P-2Aw" secondAttribute="width" id="p5N-NI-1ka"/>
+                            <constraint firstItem="MJy-hE-JsJ" firstAttribute="leading" secondItem="71J-dv-Vbp" secondAttribute="leading" id="vs5-Eq-yPq"/>
                         </constraints>
-                        <animations/>
                     </view>
                     <connections>
                         <outlet property="authorNameTextField" destination="mJg-3P-2Aw" id="qjd-9O-kYI"/>
                         <outlet property="baseClassTextField" destination="aJ1-yn-Pl7" id="22H-xr-iCp"/>
                         <outlet property="companyNameTextField" destination="sNu-7Z-F06" id="1lU-Ld-bFb"/>
                         <outlet property="errorImageView" destination="PJA-AP-s5I" id="0nv-qV-54d"/>
+                        <outlet property="generateDictionaryRepresentation" destination="OuC-wb-3Ne" id="HQS-LZ-ubx"/>
                         <outlet property="includeObjectMapperCheckbox" destination="DfN-HB-jLF" id="gsn-gy-cek"/>
                         <outlet property="includeSwiftyCheckbox" destination="uZa-9r-6Xo" id="r84-Fc-xwG"/>
                         <outlet property="messageLabel" destination="GbJ-FJ-Uuc" id="19Z-0L-YwW"/>
+                        <outlet property="moduleName" destination="Uet-VS-bkx" id="Hzg-Eu-6BG"/>
+                        <outlet property="optionalProperties" destination="MJy-hE-JsJ" id="na9-Qm-cM3"/>
                         <outlet property="prefixClassTextField" destination="b3c-Wz-v36" id="3wr-bV-AAf"/>
+                        <outlet property="supportJsonSwift" destination="Pg6-GK-Pvc" id="5ik-Rl-qjq"/>
                         <outlet property="supportNSCodingCheckbox" destination="or1-PD-m0L" id="wyH-nh-iSo"/>
+                        <outlet property="supportOSJSON" destination="L5l-mI-RYg" id="SdN-F5-GAe"/>
                         <outlet property="supportObjectMapperCheckbox" destination="Cqf-Zq-qhb" id="Bxl-UD-iag"/>
                         <outlet property="supportSwiftyJSONCheckbox" destination="cd4-4Z-P4h" id="JHq-HI-vYJ"/>
                         <outlet property="textView" destination="fWl-7Q-Cq6" id="1lh-CW-y1Y"/>
+                        <outlet property="useTabs" destination="71J-dv-Vbp" id="ShH-dY-19L"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="819.5" y="535"/>
+            <point key="canvasLocation" x="819.5" y="553"/>
         </scene>
     </scenes>
     <resources>
